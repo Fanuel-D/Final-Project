@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../../UserContext.jsx";
-import "../styles/logInForm.css";
+import { UserContext } from "./UserContext.jsx";
+import "../styles/LoginForm.css";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -15,17 +15,14 @@ const LoginForm = () => {
 
     try {
       // Make the login API request
-      const response = await fetch(
-        `https://kudos-board-mlsa.onrender.com/users/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`http://localhost:3000/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
+      });
 
       if (response.ok) {
         const data = await response.json();
