@@ -1,7 +1,6 @@
 .appHeader {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     position: fixed;
     width: 100%;
@@ -13,6 +12,6 @@
     margin-top: 0;
   }
 
-.nameOfSite {
-align-self: flex-start;
+.avatar {
+  margin: 30px;
 }

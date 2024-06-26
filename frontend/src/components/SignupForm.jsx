@@ -1,7 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/SignupForm.css";
-import { UserContext } from "./App.jsx";
+import { UserContext } from "../UserContext";
+import axios from "axios";
 
 const SignupForm = () => {
   const [username, setUsername] = useState("");
@@ -16,19 +17,26 @@ const SignupForm = () => {
 
     try {
       // Make the signup API request
-      const response = await axios.post(`http://localhost:3000/users/signup`, {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `http://localhost:3000/auth/users/signup`,
+        {
+          username,
+          password,
+          email,
+        }
+      );
 
       const token = response.data;
       window.localStorage.setItem("token", token);
 
-      const userResponse = await axios.get(`http://localhost:3000/users/me`, {
-        headers: {
-          authorization: token,
-        },
-      });
+      const userResponse = await axios.get(
+        `http://localhost:3000/auth/users/me`,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
 
       const loggedInUser = userResponse.data;
 

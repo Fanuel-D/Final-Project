@@ -30,8 +30,8 @@ router.post("/users/signup", async (req, res) => {
       },
     });
 
-    const token = jwt.sign(newUser, process.env.JWT_SECRET_KEY);
-    res.json({ token });
+    const token = jwt.sign({ newUser }, process.env.JWT_SECRET_KEY);
+    res.send({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });

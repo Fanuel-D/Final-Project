@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/LoginForm.css";
 import axios from "axios";
-import { UserContext } from "./App.jsx";
+import { UserContext } from "../UserContext";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -16,19 +16,25 @@ const LoginForm = () => {
 
     try {
       // Make the login API request
-      const response = await axios.post(`http://localhost:3000/users/login`, {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        `http://localhost:3000/auth/users/login`,
+        {
+          username,
+          password,
+        }
+      );
 
       const token = response.data;
       window.localStorage.setItem("token", token);
 
-      const userResponse = await axios.get(`http://localhost:3000/users/me`, {
-        headers: {
-          authorization: token,
-        },
-      });
+      const userResponse = await axios.get(
+        `http://localhost:3000/auth/users/me`,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
       const loggedInUser = userResponse.data;
 
       setUser(loggedInUser);

@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 // import "../styles/App.css";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
@@ -6,7 +6,7 @@ import Homepage from "./HomePage";
 import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-export const UserContext = createContext();
+import { UserContext } from "../UserContext";
 
 function App() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function App() {
 
       if (token) {
         const userResponse = await axios.get(
-          `http://localhost:3000/users/login`,
+          `http://localhost:3000/auth/users/login`,
           {
             headers: {
               authorization: token,
@@ -45,6 +45,7 @@ function App() {
             <Route path="/homepage" element={<Homepage />} />
           ) : (
             <>
+              <Route path="/homepage" element={<Homepage />} />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
             </>
