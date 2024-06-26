@@ -18,7 +18,7 @@ function App() {
 
       if (token) {
         const userResponse = await axios.get(
-          `http://localhost:3000/auth/users/login`,
+          `http://localhost:3000/auth/users/me`,
           {
             headers: {
               authorization: token,

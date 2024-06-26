@@ -59,32 +59,33 @@ function Homepage() {
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
           alignItems: "center",
           height: "150px",
-          padding: "10px",
+          padding: "20px 50px",
+          justifyContent: "space-between",
         }}
       >
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography
-          variant="h3"
-          noWrap
-          component="div"
-          sx={{
-            flexGrow: 1,
-            display: { xs: "none", sm: "block" },
-          }}
-        >
-          Learnify
-        </Typography>
+        <div style={{ display: "flex" }}>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h3"
+            noWrap
+            component="div"
+            sx={{
+              display: { xs: "none", sm: "block" },
+            }}
+          >
+            Learnify
+          </Typography>
+        </div>
 
         <Search>
           <SearchIconWrapper>
