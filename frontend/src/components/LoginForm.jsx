@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "./UserContext.jsx";
 import "../styles/LoginForm.css";
+import axios from "axios";
+import { UserContext } from "./App.jsx";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { updateUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -15,28 +16,25 @@ const LoginForm = () => {
 
     try {
       // Make the login API request
-      const response = await fetch(`http://localhost:3000/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-        credentials: "include",
+      const response = await axios.post(`http://localhost:3000/users/login`, {
+        username,
+        password,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const loggedInUser = data.user;
+      const token = response.data;
+      window.localStorage.setItem("token", token);
 
-        // Update the user context
-        updateUser(loggedInUser);
+      const userResponse = await axios.get(`http://localhost:3000/users/me`, {
+        headers: {
+          authorization: token,
+        },
+      });
+      const loggedInUser = userResponse.data;
 
-        // Navigate to the home page after successful login
-        navigate("/");
-      } else {
-        // Handle the login failure case
-        alert("Login failed");
-      }
+      setUser(loggedInUser);
+
+      // Navigate to the home page after successful login
+      navigate("/homepage");
     } catch (error) {
       // Handle any network or API request errors
       alert("Login failed: " + error);

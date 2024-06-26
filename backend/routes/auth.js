@@ -1,11 +1,13 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-const router = express.Router();
 
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+
+const prisma = new PrismaClient();
 // Route for user registration
-router.post("/users", async (req, res) => {
+router.post("/users/signup", async (req, res) => {
   const { username, password, email } = req.body;
 
   try {
@@ -28,8 +30,8 @@ router.post("/users", async (req, res) => {
         email: email,
       },
     });
-
-    req.session.user = newUser;
+    const token = jwt.sign({ newUser }, process.env.JWT_SECRET);
+    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
@@ -45,20 +47,24 @@ router.post("/users/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-
-    if (!isValidPassword) {
-      return res.status(401).json({ error: "Invalid username or password" });
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
+    if (isCorrectPassword) {
+      const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
+      res.send(token);
+    } else {
+      res.status(401).send({ message: "Incorrect password" });
     }
-
-    req.session.user = user;
-
-    res.json({ user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
+});
+
+router.get("/users/me", async (req, res) => {
+  const token = req.headers.authorization;
+
+  const user = jwt.verify(token, process.env.JWT_SECRET);
+  res.send(user);
 });
 
 module.exports = router;

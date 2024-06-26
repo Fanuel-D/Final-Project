@@ -1,32 +1,56 @@
-import { useState } from "react";
+import { createContext, useState, useEffect } from "react";
 // import "../styles/App.css";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
-import { Link } from "react-router-dom";
-import { UserProvider } from "./UserContext";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import Homepage from "./HomePage";
+import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+export const UserContext = createContext();
+
 function App() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const possiblyLogin = async () => {
+      const token = window.localStorage.getItem("token");
+
+      if (token) {
+        const userResponse = await axios.get(
+          `http://localhost:3000/users/login`,
+          {
+            headers: {
+              authorization: token,
+            },
+          }
+        );
+
+        const user = userResponse.data;
+
+        setUser(user);
+
+        navigate("/homepage");
+      }
+    };
+
+    possiblyLogin();
+  }, []);
+
   return (
     <>
-      <UserProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/signUp" element={<SignupForm />} />
-            <Route
-              path="/"
-              element={
-                <div>
-                  <div>hello</div>
-                  <p>
-                    New to the app? <Link to="/signup">Sign Up</Link>
-                  </p>
-                </div>
-              }
-            />
-          </Routes>
-        </Router>
-      </UserProvider>
+      <UserContext.Provider value={{ user, setUser }}>
+        <Routes>
+          {user ? (
+            <Route path="/homepage" element={<Homepage />} />
+          ) : (
+            <>
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/signup" element={<SignupForm />} />
+            </>
+          )}
+        </Routes>
+      </UserContext.Provider>
     </>
   );
 }
