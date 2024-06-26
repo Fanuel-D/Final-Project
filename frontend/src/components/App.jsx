@@ -12,6 +12,14 @@ function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
+  const logout = () => {
+    window.localStorage.removeItem("token");
+
+    setUser(null);
+
+    navigate("/login");
+  };
+
   useEffect(() => {
     const possiblyLogin = async () => {
       const token = window.localStorage.getItem("token");
@@ -42,10 +50,13 @@ function App() {
       <UserContext.Provider value={{ user, setUser }}>
         <Routes>
           {user ? (
-            <Route path="/homepage" element={<Homepage />} />
+            <Route
+              path="/homepage"
+              element={<Homepage user={user} logout={logout} />}
+            />
           ) : (
             <>
-              <Route path="/homepage" element={<Homepage />} />
+              <Route path="/" element={<LoginForm />} exact></Route>
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
             </>

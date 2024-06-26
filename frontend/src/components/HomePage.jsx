@@ -3,12 +3,12 @@ import Avatar from "@mui/joy/Avatar";
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import Button from "@mui/joy/Button";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -20,7 +20,7 @@ const Search = styled("div")(({ theme }) => ({
   width: "100%",
   [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
-    width: "auto",
+    width: "40%",
   },
 }));
 
@@ -51,12 +51,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Homepage() {
+function Homepage({ user, logout }) {
   return (
-    <Box sx={{ flexGrow: 1, justifyContent: "space-between" }}>
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="static"
         sx={{
+          backgroundColor: "purple",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -96,8 +97,12 @@ function Homepage() {
             inputProps={{ "aria-label": "search" }}
           />
         </Search>
-
-        <Avatar className="avatar" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar className="avatar">{`${user.username}`}</Avatar>
+          <Button color="neutral" variant="soft" onClick={logout}>
+            Log out
+          </Button>
+        </div>
       </AppBar>
     </Box>
   );
