@@ -1,126 +1,52 @@
 import "../styles/HomePage.css";
-import Avatar from "@mui/joy/Avatar";
 import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/joy/Button";
+import { useState } from "react";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import HomeAppBar from "./HomeAppBar";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "40%",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
   position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 function Homepage({ user, logout }) {
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    PDFViewer(file);
+  };
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: "purple",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          height: "150px",
-          padding: "20px 50px",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex" }}>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h3"
-            noWrap
-            component="div"
-            sx={{
-              display: { xs: "none", sm: "block" },
-            }}
-          >
-            Learnify
-          </Typography>
-        </div>
-
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-          />
-        </Search>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar className="avatar">{`${user.username}`}</Avatar>
-          <Button color="neutral" variant="soft" onClick={logout}>
-            Log out
-          </Button>
-        </div>
-      </AppBar>
-    </Box>
-  );
-}
-
-export default Homepage;
-
-{
-  /* <header className="appHeader">
-        <h1 className="nameOfSite" style={{ marginLeft: "10px" }}>
-          Learnify
-        </h1>
-        <Avatar className="avatar" />
-      </header>
-      <body>
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        <HomeAppBar user={user} logout={logout} />
+      </Box>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         <Box
-          height={200}
-          width={200}
+          margin={"10px"}
+          width={"50%"}
+          height={"20vh"}
           my={4}
           display="flex"
           alignItems="center"
@@ -128,7 +54,33 @@ export default Homepage;
           p={2}
           sx={{ border: "2px solid grey" }}
         >
-          This Box uses MUI System props for quick customization.
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload file
+            <VisuallyHiddenInput onChange={handleFileChange} type="file" />
+          </Button>
         </Box>
-      </body> */
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Box
+          margin={"10px"}
+          width={"50%"}
+          height={"20vh"}
+          my={4}
+          display="flex"
+          alignItems="center"
+          gap={4}
+          p={2}
+          sx={{ border: "2px solid grey" }}
+        ></Box>
+      </div>
+    </>
+  );
 }
+
+export default Homepage;
