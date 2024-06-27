@@ -1,14 +1,15 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "./UserContext.jsx";
 import "../styles/SignupForm.css";
+import { UserContext } from "../UserContext";
+import axios from "axios";
 
 const SignupForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { updateUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,35 +17,40 @@ const SignupForm = () => {
 
     try {
       // Make the signup API request
-      const response = await fetch(`http://localhost:3000/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-        credentials: "include",
-      });
+      const response = await axios.post(
+        `http://localhost:3000/auth/users/signup`,
+        {
+          username,
+          password,
+          email,
+        }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-        const loggedInUser = data.user;
+      const token = response.data;
+      window.localStorage.setItem("token", token);
 
-        console.log("Signup successful");
+      const userResponse = await axios.get(
+        `http://localhost:3000/auth/users/me`,
+        {
+          headers: {
+            authorization: token,
+          },
+        }
+      );
 
-        // Reset form fields
-        setUsername("");
-        setEmail("");
-        setPassword("");
+      const loggedInUser = userResponse.data;
 
-        // Update the user context
-        updateUser(loggedInUser);
+      setUser(loggedInUser);
 
-        // Navigate to the home page after successful login
-        navigate("/");
-      } else {
-        // Handle signup failure case
-        alert("Signup failed");
-      }
+      navigate("/homepage");
+
+      console.log("Signup successful");
+
+      setUsername("");
+      setEmail("");
+      setPassword("");
+
+      navigate("/homepage");
     } catch (error) {
       // Handle any network or API request errors
       alert("Signup failed: " + error);
