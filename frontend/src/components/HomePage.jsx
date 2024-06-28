@@ -55,6 +55,18 @@ function Homepage({ user, logout }) {
     }
   }, [file]);
 
+  const createInteractableText = (text) => {
+    return text.split(/\s+/).map((word, index) => (
+      <span
+        key={index}
+        className="word"
+        onClick={() => alert(`You clicked on the word: ${word}`)}
+      >
+        {word}&nbsp;
+      </span>
+    ));
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -64,7 +76,7 @@ function Homepage({ user, logout }) {
         <Box
           margin={"10px"}
           width={"50%"}
-          height={"20vh"}
+          height={"auto"}
           my={4}
           display="flex"
           alignItems="center"
@@ -88,15 +100,25 @@ function Homepage({ user, logout }) {
         <Box
           margin={"10px"}
           width={"50%"}
-          height={"20vh"}
+          height={"80vh"}
           my={4}
           display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
           alignItems="center"
           gap={4}
           p={2}
-          sx={{ border: "2px solid grey", backgroundColor: "yellow" }}
+          sx={{
+            border: "2px solid grey",
+            backgroundColor: "yellow",
+            overflow: "auto",
+            padding: "30px",
+            boxSizing: "border-box",
+          }}
         >
-          <textarea value={pdfText} readOnly />
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
+            {createInteractableText(pdfText)}
+          </div>
         </Box>
       </div>
     </>
