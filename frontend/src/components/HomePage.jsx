@@ -6,6 +6,8 @@ import Button from "@mui/joy/Button";
 import { useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import HomeAppBar from "./HomeAppBar";
+import PDFParser from "./PDFParser";
+import { yellow } from "@mui/material/colors";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -32,9 +34,10 @@ const style = {
 };
 
 function Homepage({ user, logout }) {
+  const [file, setFile] = useState(null);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    PDFViewer(file);
+    setFile(file);
   };
 
   return (
@@ -76,8 +79,10 @@ function Homepage({ user, logout }) {
           alignItems="center"
           gap={4}
           p={2}
-          sx={{ border: "2px solid grey" }}
-        ></Box>
+          sx={{ border: "2px solid grey", backgroundColor: "yellow" }}
+        >
+          <PDFParser file={file} />
+        </Box>
       </div>
     </>
   );

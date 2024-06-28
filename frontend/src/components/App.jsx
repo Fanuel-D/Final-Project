@@ -34,9 +34,7 @@ function App() {
         );
 
         const user = userResponse.data;
-
         setUser(user);
-
         navigate("/homepage");
       }
     };
