@@ -20,6 +20,10 @@ const ParsedPDFHandler = ({ data }) => {
       return <li>{element.Text}</li>;
     } else if (element.Path.endsWith("Title")) {
       return <h1 style={{ color: "black" }}>{element.Text}</h1>;
+    } else if (element.Path.endsWith("Figure")) {
+      let URL = `http://localhost:3000/${element.filePaths[0]}`;
+      console.log(URL);
+      return <img src={URL} alt="Logo" />;
     }
     // else if (element.Path.endsWith("Table")) {
     //   return (
