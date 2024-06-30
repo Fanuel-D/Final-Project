@@ -3,9 +3,11 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/joy/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import HomeAppBar from "./HomeAppBar";
+import axios from "axios";
+import ParsedPDFHandler from "./ParsedPDFHandler";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -32,10 +34,39 @@ const style = {
 };
 
 function Homepage({ user, logout }) {
+  const [file, setFile] = useState(null);
+  const [pdfText, setPdfText] = useState(null);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    PDFViewer(file);
+    setFile(file);
   };
+
+  useEffect(() => {
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      axios
+        .post("http://localhost:3000/parse-pdf/upload-pdf", formData, {
+          headers: {
+            "Content-Type": `multipart/form-data;`,
+          },
+        })
+        .then((respone) => setPdfText(respone))
+        .catch((error) => console.log("Error: ", error));
+    }
+  }, [file]);
+
+  // const createInteractableText = (text) => {
+  //   return text.split(/\s+/).map((word, index) => (
+  //     <span
+  //       key={index}
+  //       className="word"
+  //       onClick={() => alert(`You clicked on the word: ${word}`)}
+  //     >
+  //       {word}&nbsp;
+  //     </span>
+  //   ));
+  // };
 
   return (
     <>
@@ -46,7 +77,7 @@ function Homepage({ user, logout }) {
         <Box
           margin={"10px"}
           width={"50%"}
-          height={"20vh"}
+          height={"auto"}
           my={4}
           display="flex"
           alignItems="center"
@@ -70,14 +101,24 @@ function Homepage({ user, logout }) {
         <Box
           margin={"10px"}
           width={"50%"}
-          height={"20vh"}
+          height={"80vh"}
           my={4}
           display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
           alignItems="center"
           gap={4}
           p={2}
-          sx={{ border: "2px solid grey" }}
-        ></Box>
+          sx={{
+            border: "2px solid grey",
+            backgroundColor: "yellow",
+            overflow: "auto",
+            padding: "30px",
+            boxSizing: "border-box",
+          }}
+        >
+          {pdfText ? <ParsedPDFHandler data={pdfText.data} /> : ""}
+        </Box>
       </div>
     </>
   );
