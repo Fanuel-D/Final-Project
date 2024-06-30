@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import HomeAppBar from "./HomeAppBar";
 import axios from "axios";
+import ParsedPDFHandler from "./ParsedPDFHandler";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -34,7 +35,7 @@ const style = {
 
 function Homepage({ user, logout }) {
   const [file, setFile] = useState(null);
-  const [pdfText, setPdfText] = useState("");
+  const [pdfText, setPdfText] = useState(null);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setFile(file);
@@ -50,22 +51,22 @@ function Homepage({ user, logout }) {
             "Content-Type": `multipart/form-data;`,
           },
         })
-        .then((respone) => setPdfText(respone.data))
+        .then((respone) => setPdfText(respone))
         .catch((error) => console.log("Error: ", error));
     }
   }, [file]);
 
-  const createInteractableText = (text) => {
-    return text.split(/\s+/).map((word, index) => (
-      <span
-        key={index}
-        className="word"
-        onClick={() => alert(`You clicked on the word: ${word}`)}
-      >
-        {word}&nbsp;
-      </span>
-    ));
-  };
+  // const createInteractableText = (text) => {
+  //   return text.split(/\s+/).map((word, index) => (
+  //     <span
+  //       key={index}
+  //       className="word"
+  //       onClick={() => alert(`You clicked on the word: ${word}`)}
+  //     >
+  //       {word}&nbsp;
+  //     </span>
+  //   ));
+  // };
 
   return (
     <>
@@ -116,9 +117,7 @@ function Homepage({ user, logout }) {
             boxSizing: "border-box",
           }}
         >
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {createInteractableText(pdfText)}
-          </div>
+          {pdfText ? <ParsedPDFHandler data={pdfText.data} /> : ""}
         </Box>
       </div>
     </>
