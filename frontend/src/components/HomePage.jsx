@@ -8,6 +8,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import HomeAppBar from "./HomeAppBar";
 import axios from "axios";
 import ParsedPDFHandler from "./ParsedPDFHandler";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import FilePage from "./FilePage";
+import FileCard from "./FileCard";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -35,23 +38,29 @@ const style = {
 
 function Homepage({ user, logout }) {
   const [file, setFile] = useState(null);
-  const [pdfText, setPdfText] = useState(null);
+  const [parsedfileInfo, setParsedfileInfo] = useState(null);
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setFile(file);
   };
 
+  // axios.get(() => {
+  //   const userResponse = await axios.get(
+  //     `http://localhost:3000/files/${usern})
+  // })
+
   useEffect(() => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("user", JSON.stringify(user));
       axios
         .post("http://localhost:3000/parse-pdf/upload-pdf", formData, {
           headers: {
             "Content-Type": `multipart/form-data;`,
           },
         })
-        .then((respone) => setPdfText(respone))
+        .then((respone) => console.log(respone))
         .catch((error) => console.log("Error: ", error));
     }
   }, [file]);
@@ -69,58 +78,45 @@ function Homepage({ user, logout }) {
   // };
 
   return (
-    <>
-      <Box sx={{ flexGrow: 1 }}>
-        <HomeAppBar user={user} logout={logout} />
-      </Box>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Box
-          margin={"10px"}
-          width={"50%"}
-          height={"auto"}
-          my={4}
-          display="flex"
-          alignItems="center"
-          gap={4}
-          p={2}
-          sx={{ border: "2px solid grey" }}
-        >
-          <Button
-            component="label"
-            role={undefined}
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload file
-            <VisuallyHiddenInput onChange={handleFileChange} type="file" />
-          </Button>
-        </Box>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Box
-          margin={"10px"}
-          width={"50%"}
-          height={"80vh"}
-          my={4}
-          display="flex"
-          flexDirection="column"
-          justifyContent="flex-start"
-          alignItems="center"
-          gap={4}
-          p={2}
-          sx={{
-            border: "2px solid grey",
-            backgroundColor: "white",
-            overflow: "auto",
-            padding: "30px",
-            boxSizing: "border-box",
-          }}
-        >
-          {pdfText ? <ParsedPDFHandler data={pdfText.data} /> : ""}
-        </Box>
-      </div>
-    </>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+            <Box sx={{ flexGrow: 1 }}>
+              <HomeAppBar user={user} logout={logout} />
+            </Box>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Box
+                margin={"10px"}
+                width={"50%"}
+                height={"auto"}
+                my={4}
+                display="flex"
+                alignItems="center"
+                gap={4}
+                p={2}
+                sx={{ border: "2px solid grey" }}
+              >
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload file
+                  <VisuallyHiddenInput
+                    onChange={handleFileChange}
+                    type="file"
+                  />
+                </Button>
+              </Box>
+            </div>
+          </>
+        }
+      ></Route>
+    </Routes>
   );
 }
 

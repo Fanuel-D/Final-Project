@@ -14,7 +14,46 @@ datasource db {
 }
 
 model Users {
-  username String @id
-  email    String
-  password String
+  userId    String @id @default(uuid())
+  username  String @unique
+  email     String
+  password  String
+  files     File[]
+}
+
+model File {
+  fileId          String   @id @default(uuid())
+  fileName        String
+  favoriteFlag    Boolean  @default(true)
+  fileDetails     Json
+  questions       Question []
+  askmeLaters     AskMeLater []
+  reflections     Reflection []
+  user            Users @relation(fields: [userId], references: [userId] )
+  userId          String
+}
+
+model Question {
+  id               String   @id @default(uuid())
+  questionText     String
+  questionAnswer   String
+  file             File @relation (fields: [fileId], references: [fileId])
+  fileId           String
+}
+
+model Reflection {
+  id         String   @id @default(uuid())
+  title      String
+  text       String
+  createdAt  DateTime   @default(now())
+  file       File @relation (fields: [fileId], references: [fileId])
+  fileId     String
+}
+
+model AskMeLater {
+  id               String   @id @default(uuid())
+  questionText     String
+  questionAnswer   String
+  file             File @relation (fields: [fileId], references: [fileId])
+  fileId           String
 }

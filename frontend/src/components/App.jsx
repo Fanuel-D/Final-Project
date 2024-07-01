@@ -48,12 +48,12 @@ function App() {
         <Routes>
           {user ? (
             <Route
-              path="/homepage"
+              path="/homepage/*"
               element={<Homepage user={user} logout={logout} />}
             />
           ) : (
             <>
-              <Route path="/" element={<LoginForm />} exact></Route>
+              <Route path="/" element={<LoginForm />} exact />
               <Route path="/login" element={<LoginForm />} />
               <Route path="/signup" element={<SignupForm />} />
             </>

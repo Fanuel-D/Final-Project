@@ -16,9 +16,13 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 const router = express.Router();
 const AdmZip = require("adm-zip");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 //root route is parse-pdf
 router.post("/upload-pdf", upload.single("file"), async (req, res) => {
   const pdfPath = `${req.file.path}`;
+  const user = JSON.parse(req.body.user);
+  console.log(user);
   (async () => {
     let readStream;
     try {
@@ -77,8 +81,16 @@ router.post("/upload-pdf", upload.single("file"), async (req, res) => {
         }
       });
       let jsondata = zip.readAsText("structuredData.json");
-      let data = JSON.parse(jsondata);
-      res.send(data);
+      let filedata = JSON.parse(jsondata);
+
+      const newFileCard = prisma.file.create({
+        data: {
+          fileName: "hello",
+          fileDetails: filedata,
+          username: user.username,
+        },
+      });
+      res.json(newFileCard);
     } catch (err) {
       console.log("Exception encountered while executing operation", err);
     } finally {
