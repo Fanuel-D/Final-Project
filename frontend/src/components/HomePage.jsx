@@ -111,7 +111,7 @@ function Homepage({ user, logout }) {
           p={2}
           sx={{
             border: "2px solid grey",
-            backgroundColor: "yellow",
+            backgroundColor: "white",
             overflow: "auto",
             padding: "30px",
             boxSizing: "border-box",

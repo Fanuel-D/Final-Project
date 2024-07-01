@@ -3,10 +3,12 @@ const {
   PDFServices,
   MimeType,
   ExtractPDFParams,
+  ExtractRenditionsElementType,
   ExtractElementType,
   ExtractPDFJob,
   ExtractPDFResult,
 } = require("@adobe/pdfservices-node-sdk");
+
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
@@ -38,9 +40,12 @@ router.post("/upload-pdf", upload.single("file"), async (req, res) => {
 
       // Create parameters for the job
       const params = new ExtractPDFParams({
-        elementsToExtract: [ExtractElementType.TEXT],
+        elementsToExtract: [ExtractElementType.TEXT, ExtractElementType.TABLES],
+        elementsToExtractRenditions: [
+          ExtractRenditionsElementType.FIGURES,
+          ExtractRenditionsElementType.TABLES,
+        ],
       });
-
       // Creates a new job instance
       const job = new ExtractPDFJob({ inputAsset, params });
 
@@ -63,6 +68,14 @@ router.post("/upload-pdf", upload.single("file"), async (req, res) => {
       streamAsset.readStream.pipe(writeStream);
 
       let zip = new AdmZip(outputFilePath);
+      const zipEntries = zip.getEntries();
+      // Filter and extract only the 'figures' folder
+      zipEntries.forEach((entry) => {
+        if (entry.entryName.startsWith("figures/")) {
+          // Extract this entry to current directory
+          zip.extractEntryTo(entry.entryName, "./public/figures", false, true);
+        }
+      });
       let jsondata = zip.readAsText("structuredData.json");
       let data = JSON.parse(jsondata);
       res.send(data);
