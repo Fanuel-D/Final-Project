@@ -84,7 +84,7 @@ router.post("/upload-pdf", upload.single("file"), async (req, res) => {
 
       const newFileCard = await prisma.file.create({
         data: {
-          fileName: "hello",
+          fileName: `${req.file.originalname}`,
           fileDetails: filedata,
           userId: user.userId,
         },
