@@ -6,6 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../UserContext";
+import FilePage from "./FilePage";
 
 function App() {
   const navigate = useNavigate();
@@ -47,10 +48,13 @@ function App() {
       <UserContext.Provider value={{ user, setUser }}>
         <Routes>
           {user ? (
-            <Route
-              path="/homepage/*"
-              element={<Homepage user={user} logout={logout} />}
-            />
+            <>
+              <Route
+                path="/homepage/"
+                element={<Homepage user={user} logout={logout} />}
+              />
+              <Route path="/files/:fileId" element={<FilePage user={user} />} />
+            </>
           ) : (
             <>
               <Route path="/" element={<LoginForm />} exact />

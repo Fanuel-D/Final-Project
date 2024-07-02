@@ -1,21 +1,22 @@
 import { react } from "react";
 import { Link } from "react-router-dom";
-function FileCard({ file }) {
+import "../styles/FileCard.css";
+function FileCard({ userFile }) {
   return (
-    <Link to={"/files" + file.fileID}>
-      <div className="kudos-card">
-        <img src={imgURL} alt="there is an image here" className="imageTag" />
-        <div className="boardDetails">
-          <h5 style={{ margin: "4px" }}>{board.title}</h5>
+    <Link to={"/files/" + userFile.fileId}>
+      <div className="fileCard">
+        <img src="" alt="img" className="imageTag" style={{ margin: "5px" }} />
+        <div className="fileDetails">
+          <h3 style={{ margin: "4px" }}>{userFile.fileName}</h3>
         </div>
 
         <div className="bottomButtons">
           <button
-            style={{ backgroundColor: "blue" }}
-            className="deleteBoard"
-            onClick={deleteClicked}
+            style={{ backgroundColor: "grey" }}
+            className="deleteFile"
+            // onClick={deleteClicked}
           >
-            Delete Board
+            Delete File
           </button>
         </div>
       </div>

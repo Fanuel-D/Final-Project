@@ -22,7 +22,6 @@ const prisma = new PrismaClient();
 router.post("/upload-pdf", upload.single("file"), async (req, res) => {
   const pdfPath = `${req.file.path}`;
   const user = JSON.parse(req.body.user);
-  console.log(user);
   (async () => {
     let readStream;
     try {
@@ -83,11 +82,11 @@ router.post("/upload-pdf", upload.single("file"), async (req, res) => {
       let jsondata = zip.readAsText("structuredData.json");
       let filedata = JSON.parse(jsondata);
 
-      const newFileCard = prisma.file.create({
+      const newFileCard = await prisma.file.create({
         data: {
           fileName: "hello",
           fileDetails: filedata,
-          username: user.username,
+          userId: user.userId,
         },
       });
       res.json(newFileCard);
